@@ -15,7 +15,7 @@ const wsServer = new server({
 
 wsServer.on('request', (req)=>{
   const connection = req.accept();
-  console.log(new Date() + ' - Connection from origin - ' + req.origin + ' --accepted');
+  console.log(new Date() + ' - Connection from origin - ' + req.origin + ' --accepted '+ req.socket.remoteAddress+ ' forwarded address');
   connection.on('message', message => {
     console.log(`Received message ${message.utf8Data}`)
   })
