@@ -15,11 +15,15 @@ const wsServer = new server({
 
 wsServer.on('request', (req)=>{
   const connection = req.accept();
+  
   console.log(new Date() + ' - Connection on ' + process.env.APPID + ' from origin - ' + req.origin + ' --accepted ' + req.socket.remoteAddress + ' forwarded address');
+
   connection.on('message', message => {
-    console.log(`Received message ${message.utf8Data}`)
+    connection.sendUTF(`Message Received. Message was ${message.utf8Data}`)
   })
+  
   connection.on('close', ()=>{
     console.log(`connection closed ${new Date} from ${process.env.APPID}`)
   })
+
 });
