@@ -1,8 +1,26 @@
-const useWebSocket = () => {
-  const createConnections = (times: number) => {
-    [...Array(times)].forEach(() => {
+import React, { useState } from "react"
+
+const useWebSocket = (servers: {name: string, connections: number}[], setServers: React.Dispatch<React.SetStateAction<{name:string, connections: number}[]>>) => {
+
+  const [connections, setConnections] = useState<WebSocket[]>([])
+
+  const createConnections = (times: number):WebSocket[] => {
+    return [...Array(times)].map(() => {
       const connection = new WebSocket('ws://localhost:8080')
-      connection.onmessage = message => { console.log(message.data) }
+      setConnections((conns)=> [...conns, connection])
+      connection.onmessage = message => receiveMessage(message)
+      return connection;
+    })
+  }
+
+  const receiveMessage = (message: any) => {
+    const response = JSON.parse(message.data) as {name: string, connections: number};
+    setServers((oldServers)=> {
+      const serverNames = oldServers.map(({name})=>name);
+      if (serverNames.includes(response.name)) {
+        return (oldServers).map(oldServer => oldServer.name == response.name ? {name: response.name, connections: oldServer.connections+1} : oldServer)
+      }
+      return [...oldServers, {name: response.name, connections: 1}];
     })
   }
 

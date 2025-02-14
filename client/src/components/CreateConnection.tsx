@@ -1,8 +1,8 @@
-import { ReactElement, useState } from "react";
+import React, { ReactElement, useState } from "react";
 import useWebSocket from "../hooks/useWebSocket";
 
-const CreateConnection = ():ReactElement => {
-  const { createConnections } = useWebSocket()
+const CreateConnection = ({servers, setServers}: {servers: {name: string, connections: number}[], setServers: React.Dispatch<React.SetStateAction<{name:string, connections: number}[]>>}):ReactElement => {
+  const { createConnections } = useWebSocket(servers, setServers)
   const [connections, setConnections] = useState(0)
   const handleSubmit = (e: any) => {
     e.preventDefault()
