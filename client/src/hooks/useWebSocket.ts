@@ -6,9 +6,10 @@ const useWebSocket = (servers: {name: string, connections: number}[], setServers
 
   const createConnections = (times: number):WebSocket[] => {
     return [...Array(times)].map(() => {
-      const connection = new WebSocket('ws://localhost:8080')
-      setConnections((conns)=> [...conns, connection])
-      connection.onmessage = message => receiveMessage(message)
+      const connection = new WebSocket('ws://localhost:8080');
+      setConnections((conns)=> [...conns, connection]);
+      connection.onmessage = message => receiveMessage(message);
+      connection.onclose = event => connectionClosed(event);
       return connection;
     })
   }
@@ -22,6 +23,10 @@ const useWebSocket = (servers: {name: string, connections: number}[], setServers
       }
       return [...oldServers, {name: response.name, connections: 1}];
     })
+  }
+
+  const connectionClosed = (event: any) => {
+    console.log('connection closed')
   }
 
   return { createConnections }
