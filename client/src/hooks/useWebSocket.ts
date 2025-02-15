@@ -1,6 +1,7 @@
 import React, { useState } from "react"
+import { ServerInfo } from "../types/ServerInfo"
 
-const useWebSocket = (servers: {name: string, connections: number}[], setServers: React.Dispatch<React.SetStateAction<{name:string, connections: number}[]>>) => {
+const useWebSocket = (servers: ServerInfo[], setServers: React.Dispatch<React.SetStateAction<ServerInfo[]>>) => {
 
   const [connections, setConnections] = useState<WebSocket[]>([])
 
