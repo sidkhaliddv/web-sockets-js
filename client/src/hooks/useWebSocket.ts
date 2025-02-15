@@ -1,18 +1,31 @@
-import React, { useState } from "react"
+import React, { useEffect, useState } from "react"
 import { ServerInfo } from "../types/ServerInfo"
 
 const useWebSocket = (servers: ServerInfo[], setServers: React.Dispatch<React.SetStateAction<ServerInfo[]>>) => {
 
   const [connections, setConnections] = useState<WebSocket[]>([])
 
-  const createConnections = (times: number):WebSocket[] => {
-    return [...Array(times)].map(() => {
+  useEffect(()=>{
+    setServers([])
+    connections.forEach((connection)=>{
+      if (connection.readyState == connection.CONNECTING){
+        connection.onopen = (e)=>{
+          connection.send('')
+        }
+      } else if (connection.readyState == connection.OPEN) {
+        connection.send('')
+      }
+    })
+  }, [connections])
+
+  const createConnections = (times: number) => {
+    const cncts = [...Array(times)].map(() => {
       const connection = new WebSocket('ws://localhost:8080');
-      setConnections((conns)=> [...conns, connection]);
       connection.onmessage = message => receiveMessage(message);
       connection.onclose = event => connectionClosed(event);
       return connection;
-    })
+    }) as WebSocket[]
+    setConnections(oldConnections => [...oldConnections, ...cncts])
   }
 
   const receiveMessage = (message: any) => {
@@ -28,6 +41,9 @@ const useWebSocket = (servers: ServerInfo[], setServers: React.Dispatch<React.Se
 
   const connectionClosed = (event: any) => {
     console.log('connection closed')
+    setConnections((oldConnections: WebSocket[])=>{
+      return oldConnections.filter((oldConnection) => oldConnection.readyState == oldConnection.OPEN)
+    })
   }
 
   return { createConnections }

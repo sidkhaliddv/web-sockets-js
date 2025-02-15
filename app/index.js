@@ -34,7 +34,7 @@ wsServer.on('request', (req)=>{
   connections++;
   console.log('connections', connections)
   // setInterval(()=>{
-    connection.send(JSON.stringify({name: process.env.APPID || 'app1', connections}))
+    // connection.send(JSON.stringify({name: process.env.APPID, connections}))
   // }, 5000)
   
   console.log(new Date() + ' - Connection on ' + process.env.APPID + ' from origin - ' + req.origin + ' --accepted ' + req.socket.remoteAddress + ' forwarded address');
