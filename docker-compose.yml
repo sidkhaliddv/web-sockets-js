@@ -16,6 +16,10 @@ services:
       - APPID=app1
     volumes:
       - ./app:/app
+    deploy:
+      resources:
+        limits:
+          memory: 23M
   app2:
     build: ./app
     container_name: app2
