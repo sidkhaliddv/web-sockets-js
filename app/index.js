@@ -42,7 +42,7 @@ wsServer.on('request', (req)=>{
   connection.on('message', message => {
     // setInterval(()=>{
     // connection.sendUTF(`Message Received. Message was ${message.utf8Data}`)
-    connection.send(JSON.stringify({ name: process.env.APPID }))
+    connection.send(JSON.stringify({ name: process.env.APPID, flag: message.utf8Data }))
     // }, 2000)
   })
   
