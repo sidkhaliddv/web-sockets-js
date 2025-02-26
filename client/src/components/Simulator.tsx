@@ -5,7 +5,7 @@ import { ServerInfo } from "../types/ServerInfo";
 
 const Simulator = ():ReactElement => {
   const [servers, setServers] = useState<ServerInfo[]>([])
-  console.log('called simualtor', servers)
+
   return (
     <>
       <CreateConnection servers={servers} setServers={setServers} />
