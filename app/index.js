@@ -24,6 +24,13 @@ const httpServer = http.createServer(function(req, res) {
     res.write(JSON.stringify({app: process.env.APPID, connections}))
     res.end()
   }
+  if (url == '/all') {
+    res.writeHead(200, { 'content-type': 'text/event-stream', 'access-control-allow-origin': '*' })
+    setInterval(async ()=>{
+      const connInfo = await redis.hGetAll('connections-info')
+      res.write(`data: ${JSON.stringify(connInfo)} \n\n`)
+    }, 1000)
+  }
 });
 
 httpServer.listen(8080, () => {
