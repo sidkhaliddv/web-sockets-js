@@ -1,7 +1,13 @@
 import { server } from "websocket";
+import { createClient } from "redis";
+
 import http from 'http'
 
 let connections = 0
+
+const redis = await createClient({
+  url: 'redis://redis:6379'
+}).connect()
 
 //create http server
 const httpServer = http.createServer(function(req, res) {
@@ -29,27 +35,23 @@ const wsServer = new server({
   httpServer: httpServer,
 })
 
-wsServer.on('request', (req)=>{
+wsServer.on('request', async (req) => {
   const connection = req.accept();
   connections++;
-  console.log('connections', connections)
-  // setInterval(()=>{
-    // connection.send(JSON.stringify({name: process.env.APPID, connections}))
-  // }, 5000)
-  
-  console.log(new Date() + ' - Connection on ' + process.env.APPID + ' from origin - ' + req.origin + ' --accepted ' + req.socket.remoteAddress + ' forwarded address');
-
+  await redis.hSet('connections-info',
+                   process.env.APPID, connections)
+  const connInfo = await redis.hGetAll('connections-info')
+  console.log(connInfo)
   connection.on('message', message => {
-    // setInterval(()=>{
-    // connection.sendUTF(`Message Received. Message was ${message.utf8Data}`)
     connection.send(JSON.stringify({ name: process.env.APPID, flag: message.utf8Data }))
-    // }, 2000)
   })
   
-  connection.on('close', ()=>{
+  connection.on('close', async ()=>{
     connections--;
-    console.log('connections', connections)
-    console.log(`connection closed ${new Date} from ${process.env.APPID}`)
+    await redis.hSet('connections-info',
+      process.env.APPID, connections)
+    const connInfo = await redis.hGetAll('connections-info')
+    console.log(connInfo)
   })
 
 });
