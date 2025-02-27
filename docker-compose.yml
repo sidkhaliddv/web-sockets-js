@@ -27,3 +27,5 @@ services:
       - APPID=app2
     volumes:
       - ./app:/app
+  redis:
+    image: redis
