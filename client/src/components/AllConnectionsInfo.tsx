@@ -12,9 +12,14 @@ const AllConnectionsInfo = () => {
   }, [])
   return (
     <>
-      {allServers && Object.keys(allServers).map((server)=>(
-        <ServerConnectionInfo key={server} serverInfo={{name: server, connections: parseInt(allServers[server])}} />
-      ))}
+    { allServers ? 
+      <>
+        { allServers && 'Total Connections: '+ Object.values(allServers).reduce((accumulator: any, currentValue: any)=> parseInt(accumulator)+parseInt(currentValue), 0)}
+        {allServers && Object.keys(allServers).map((server)=>(
+          <ServerConnectionInfo key={server} serverInfo={{name: server, connections: parseInt(allServers[server])}} />
+        ))}
+      </>
+     : 'Total Connections: 0'}
     </>
   )
 }
