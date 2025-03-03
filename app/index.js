@@ -29,7 +29,7 @@ const httpServer = http.createServer(function(req, res) {
     setInterval(async ()=>{
       const connInfo = await redis.hGetAll('connections-info')
       res.write(`data: ${JSON.stringify(connInfo)} \n\n`)
-    }, 1000)
+    }, 3000)
   }
 });
 
